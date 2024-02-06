@@ -8,6 +8,27 @@ export const conversationsApi = apiSlice.injectEndpoints({
           import.meta.env.VITE_APP_CONVERSATION_LIMIT
         }`,
     }),
+
+    getConversation: builder.query({
+      query: ({ userEmail, participantEmail }) =>
+        `/conversations?participants_like=${userEmail}-${participantEmail}&&participants_like=${participantEmail}-${userEmail}`,
+    }),
+
+    addConversation: builder.mutation({
+      query: (data) => ({
+        url: "/conversations",
+        method: "POST",
+        body: data,
+      }),
+    }),
+
+    editConversation: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/conversations/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+    }),
   }),
 });
 
