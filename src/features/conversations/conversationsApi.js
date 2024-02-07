@@ -47,6 +47,11 @@ export const conversationsApi = apiSlice.injectEndpoints({
       },
     }),
 
+    getConversation: builder.query({
+      query: ({ userEmail, participantEmail }) =>
+        `/conversations?participants_like=${userEmail}-${participantEmail}&&participants_like=${participantEmail}-${userEmail}`,
+    }),
+
     addConversation: builder.mutation({
       // eslint-disable-next-line no-unused-vars
       query: ({ sender, data }) => ({
@@ -109,6 +114,7 @@ export const conversationsApi = apiSlice.injectEndpoints({
               (user) => user.email !== arg.sender
             );
 
+            // eslint-disable-next-line no-unused-vars
             const res = await dispatch(
               messagesApi.endpoints.addMessage.initiate({
                 conversationId: conversation?.data?.id,
@@ -119,17 +125,17 @@ export const conversationsApi = apiSlice.injectEndpoints({
               })
             ).unwrap();
 
-            // update messages cache pessimistically start
-            dispatch(
-              apiSlice.util.updateQueryData(
-                "getMessages",
-                res.conversationId.toString(),
-                (draft) => {
-                  draft.push(res);
-                }
-              )
-            );
-            // update messages cache pessimistically end
+            // // update messages cache pessimistically start
+            // dispatch(
+            //   apiSlice.util.updateQueryData(
+            //     "getMessages",
+            //     res.conversationId.toString(),
+            //     (draft) => {
+            //       draft.push(res);
+            //     }
+            //   )
+            // );
+            // // update messages cache pessimistically end
           }
         } catch (err) {
           pathResult.undo();
@@ -137,6 +143,7 @@ export const conversationsApi = apiSlice.injectEndpoints({
       },
     }),
   }),
+  overrideExisting: true,
 });
 
 export const {
