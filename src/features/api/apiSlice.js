@@ -27,4 +27,5 @@ export const apiSlice = createApi({
   },
   tagTypes: [],
   endpoints: (builder) => ({}),
+  overrideExisting: true,
 });
